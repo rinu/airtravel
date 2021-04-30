@@ -35,14 +35,16 @@ const load = (file: string): Promise<string> => {
 }
 
 export default {
-  airport: (code: string): Promise<Airport|null> => {
-    code = code.toUpperCase()
+  airport: (code: string|number): Promise<Airport|null> => {
+    if (typeof code === 'string') {
+      code = code.toUpperCase()
+    }
     return load('airports.dat').then((data) => {
       const airports: Airport[] = parse(data, {
         columns: ['id', 'name', 'city', 'country', 'iata', 'icao', 'latitude', 'longitude', 'altitude', 'timezone', 'dst', 'tz', 'type', 'source']
       })
       for (const airport of airports) {
-        if (airport.iata === code || airport.icao === code) {
+        if (+airport.id === code || airport.iata === code || airport.icao === code) {
           return airport
         }
       }
